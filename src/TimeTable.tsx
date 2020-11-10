@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { DayColumnProps } from './DayColumn'
+import { DayColumnProps, getTotalHoursWorking } from './DayColumn'
 import DayOfWeek, { daysOfWeek } from './DayOfWeek'
 import GetDayColumn from './DayColumn';
 import { TimeSheetContext, TimeSheetContextData } from './TimeSheet';
@@ -47,7 +47,9 @@ function TimeTable(props: TimeTableProps) {
             {headerRowName}
             <button onClick={() => deleteTimeTable(timeSheetContext, props.personName)}>Delete</button>
           </th>
-          <td colSpan={daysOfWeek.length}>{props.personName}</td>
+          <td colSpan={daysOfWeek.length}>
+            {props.personName}: {getTotalHoursWorkingInWeek(props)} hours
+          </td>
         </tr>
       </thead>
       <tbody>
@@ -76,6 +78,12 @@ function deleteTimeTable(context: TimeSheetContextData, personName: string) {
     type: TimeSheetActionType.DeleteTimeTable,
     personName: personName
   })
+}
+
+function getTotalHoursWorkingInWeek(props: TimeTableProps): number {
+  return daysOfWeek
+    .map(dow => getTotalHoursWorking(props.dayColumnsProps[dow]))
+    .reduce((hoursSoFar, hoursToday) => hoursSoFar + hoursToday, 0)
 }
 
 export default TimeTable;

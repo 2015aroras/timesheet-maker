@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { addSavedTimeSheetDate } from '../store/TimeSheetStore';
 import { Redirect } from 'react-router-dom';
 import { addTime, startOfWeek } from '../Utils';
+import { baseUrl } from '../App';
 
 function Home() {
   const [date, setDate] = useState(new Date(Date.now()))
@@ -10,7 +11,7 @@ function Home() {
   return (
     <>
       {isAddedTimeSheet &&
-        <Redirect to={`/${date.toISOString()}`} />
+        <Redirect to={`${baseUrl}/${date.toISOString()}`} />
       }
       <form onSubmit={(evt) => addTimeSheet(evt, date, setIsAddedTimeSheet)}>
         <label htmlFor='date'>

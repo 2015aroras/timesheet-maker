@@ -93,3 +93,4 @@ function handleChange<T>(
 
 export default GetDayColumn;
 export type { DayColumnProps };
+export { getTotalHoursWorking }; // hack
