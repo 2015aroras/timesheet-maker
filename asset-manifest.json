@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/timesheet-maker/static/css/main.a81f7755.chunk.css",
+    "main.js": "/timesheet-maker/static/js/main.d3aeaec9.chunk.js",
+    "main.js.map": "/timesheet-maker/static/js/main.d3aeaec9.chunk.js.map",
+    "runtime-main.js": "/timesheet-maker/static/js/runtime-main.fda68598.js",
+    "runtime-main.js.map": "/timesheet-maker/static/js/runtime-main.fda68598.js.map",
+    "static/js/2.70818667.chunk.js": "/timesheet-maker/static/js/2.70818667.chunk.js",
+    "static/js/2.70818667.chunk.js.map": "/timesheet-maker/static/js/2.70818667.chunk.js.map",
+    "static/js/3.b4d39b54.chunk.js": "/timesheet-maker/static/js/3.b4d39b54.chunk.js",
+    "static/js/3.b4d39b54.chunk.js.map": "/timesheet-maker/static/js/3.b4d39b54.chunk.js.map",
+    "index.html": "/timesheet-maker/index.html",
+    "static/css/main.a81f7755.chunk.css.map": "/timesheet-maker/static/css/main.a81f7755.chunk.css.map",
+    "static/js/2.70818667.chunk.js.LICENSE.txt": "/timesheet-maker/static/js/2.70818667.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.fda68598.js",
+    "static/js/2.70818667.chunk.js",
+    "static/css/main.a81f7755.chunk.css",
+    "static/js/main.d3aeaec9.chunk.js"
+  ]
+}
