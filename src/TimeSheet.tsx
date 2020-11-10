@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, SetStateAction, useRef } from 'react';
-import TimeTable from './TimeTable'
+import TimeTable, { getTotalHoursWorkingInWeek } from './TimeTable'
 import { useTimeSheetReducer, TimeSheetAction, TimeSheetActionType } from './state/TimeSheetReducer';
 import { TimeSheetState } from './state/TimeSheetState';
 import { saveTimeSheetToLocalStorage, deleteTimeSheetFromLocalStorage, existsTimeSheetInLocalStorage } from './store/TimeSheetStore';
@@ -43,6 +43,9 @@ function TimeSheet(props: TimeSheetProps) {
         <input name='person' type="text" ref={addPersonInputRef} value={addPersonValue} onChange={(evt) => setAddPersonValue(evt.target.value)} />
         <input type="submit" value="Add new timetable" />
       </form>
+      <p>
+        Total hours working in week: {getAllPeopleTotalHoursWorking(state)}
+      </p>
       {Object.keys(state.timeTablePropsMap).map(personName => (
       <div className='container' key={personName}>
         {React.createElement(
@@ -101,6 +104,12 @@ function addTimeTable(
 
   setAddPersonValue(defaultAddPersonValue)
   addPersonInputRef.current!.focus()
+}
+
+function getAllPeopleTotalHoursWorking(state: TimeSheetState): number {
+  return Object.values(state.timeTablePropsMap)
+    .map(timeTableProp => getTotalHoursWorkingInWeek(timeTableProp))
+    .reduce((hoursSoFar, hoursToday) => hoursSoFar + hoursToday, 0)
 }
 
 export default TimeSheet

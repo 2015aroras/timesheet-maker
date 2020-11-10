@@ -88,3 +88,4 @@ function getTotalHoursWorkingInWeek(props: TimeTableProps): number {
 
 export default TimeTable;
 export type { TimeTableProps };
+export { getTotalHoursWorkingInWeek }; // hack
