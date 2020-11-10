@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/timesheet-maker/static/css/main.a81f7755.chunk.css",
-    "main.js": "/timesheet-maker/static/js/main.c929195f.chunk.js",
-    "main.js.map": "/timesheet-maker/static/js/main.c929195f.chunk.js.map",
+    "main.js": "/timesheet-maker/static/js/main.1e7ada3b.chunk.js",
+    "main.js.map": "/timesheet-maker/static/js/main.1e7ada3b.chunk.js.map",
     "runtime-main.js": "/timesheet-maker/static/js/runtime-main.fda68598.js",
     "runtime-main.js.map": "/timesheet-maker/static/js/runtime-main.fda68598.js.map",
-    "static/js/2.70818667.chunk.js": "/timesheet-maker/static/js/2.70818667.chunk.js",
-    "static/js/2.70818667.chunk.js.map": "/timesheet-maker/static/js/2.70818667.chunk.js.map",
+    "static/js/2.1aedf85a.chunk.js": "/timesheet-maker/static/js/2.1aedf85a.chunk.js",
+    "static/js/2.1aedf85a.chunk.js.map": "/timesheet-maker/static/js/2.1aedf85a.chunk.js.map",
     "static/js/3.b4d39b54.chunk.js": "/timesheet-maker/static/js/3.b4d39b54.chunk.js",
     "static/js/3.b4d39b54.chunk.js.map": "/timesheet-maker/static/js/3.b4d39b54.chunk.js.map",
     "index.html": "/timesheet-maker/index.html",
     "static/css/main.a81f7755.chunk.css.map": "/timesheet-maker/static/css/main.a81f7755.chunk.css.map",
-    "static/js/2.70818667.chunk.js.LICENSE.txt": "/timesheet-maker/static/js/2.70818667.chunk.js.LICENSE.txt"
+    "static/js/2.1aedf85a.chunk.js.LICENSE.txt": "/timesheet-maker/static/js/2.1aedf85a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.fda68598.js",
-    "static/js/2.70818667.chunk.js",
+    "static/js/2.1aedf85a.chunk.js",
     "static/css/main.a81f7755.chunk.css",
-    "static/js/main.c929195f.chunk.js"
+    "static/js/main.1e7ada3b.chunk.js"
   ]
 }
