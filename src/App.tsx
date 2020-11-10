@@ -11,6 +11,8 @@ import TimeSheetPage from './pages/TimeSheetPage';
 import { getSavedTimeSheetDates } from './store/TimeSheetStore';
 import { addTime, toReadableDateString } from './Utils';
 
+const baseUrl = '/timesheet-maker'
+
 function App() {
   const savedTimeSheetDates = getSavedTimeSheetDates()
 
@@ -20,11 +22,11 @@ function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to={baseUrl}>Home</Link>
             </li>
             {savedTimeSheetDates.sort().map(date => 
             <li key={date.toISOString()}>
-              <Link to={`/${date.toISOString()}`}>
+              <Link to={`${baseUrl}/${date.toISOString()}`}>
                 {toReadableDateString(date, true)} – {toReadableDateString(addTime(date, 7), true)}
               </Link>
             </li>)}
@@ -32,10 +34,10 @@ function App() {
         </nav>
 
         <Switch>
-          <Route path="/:date">
+          <Route path={`${baseUrl}/:date`}>
             <TimeSheetPage />
           </Route>
-          <Route path="/">
+          <Route path={baseUrl}>
             <Home />
           </Route>
         </Switch>
