@@ -4,6 +4,7 @@ import { cloneDeep } from "lodash"
 import { TimeSheetProps } from '../TimeSheet';
 import { TimeSheetState, initialState, initialTimeTableProps } from './TimeSheetState';
 import { loadTimeSheetFromLocalStorage } from '../store/TimeSheetStore';
+import { startOfWeek } from '../Utils';
 
 interface TimeSheetAction {
   type: TimeSheetActionType,
@@ -27,7 +28,7 @@ function useTimeSheetReducer(props: TimeSheetProps): [TimeSheetState, React.Disp
     initialState(props))
 
   useEffect(() => {
-    const localState = loadTimeSheetFromLocalStorage(state.weekStartDate)
+    const localState = loadTimeSheetFromLocalStorage(startOfWeek(props.date))
     if (localState !== null) {
       dispatch({
         type: TimeSheetActionType.SetState,
@@ -38,9 +39,7 @@ function useTimeSheetReducer(props: TimeSheetProps): [TimeSheetState, React.Disp
     //   console.log('Setting state')
     //   localStorage.setItem('state', JSON.stringify(state))
     // };
-  // Run only on mount and un-mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.date]);
 
   return [state, dispatch]
 }

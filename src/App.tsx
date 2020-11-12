@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter,
   Switch,
   Route,
   Link
@@ -17,16 +17,16 @@ function App() {
   const savedTimeSheetDates = getSavedTimeSheetDates()
 
   return (
-    <Router>
+    <HashRouter basename={baseUrl}>
       <>
         <nav>
           <ul>
             <li>
-              <Link to={baseUrl}>Home</Link>
+              <Link to='/'>Home</Link>
             </li>
             {savedTimeSheetDates.sort().map(date => 
             <li key={date.toISOString()}>
-              <Link to={`${baseUrl}/${date.toISOString()}`}>
+              <Link to={`/${date.toISOString()}`}>
                 {toReadableDateString(date, true)} – {toReadableDateString(addTime(date, 7), true)}
               </Link>
             </li>)}
@@ -34,15 +34,17 @@ function App() {
         </nav>
 
         <Switch>
-          <Route path={`${baseUrl}/:date`}>
-            <TimeSheetPage />
+          <Route path='/:date' component=
+            {TimeSheetPage}
+          >
+            
           </Route>
-          <Route path={baseUrl}>
+          <Route path=''>
             <Home />
           </Route>
         </Switch>
       </>
-    </Router>
+    </HashRouter>
     // <section className="App">
     //   <TimeSheet date={new Date(Date.now())} />
     // </section>
@@ -50,4 +52,3 @@ function App() {
 }
 
 export default App;
-export { baseUrl } // hack!
