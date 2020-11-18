@@ -41,7 +41,7 @@ function TimeSheet(props: TimeSheetProps) {
       <button disabled={!canDeleteTimeSheet(state.weekStartDate, props.isDeletedTimeSheetDate)} onClick={() => deleteTimeSheet(state.weekStartDate, props.deleteTimeSheetDate)}>
         Delete Time Sheet From Local Storage
       </button>
-      <form onSubmit={(evt) => addTimeTable(evt, timeSheetContext, addPersonValue, setAddPersonValue, addPersonInputRef)}>
+      <form onSubmit={(evt) => addTimeTable(evt, state, timeSheetContext, addPersonValue, setAddPersonValue, addPersonInputRef)}>
         <label htmlFor='person'>
           Person:
         </label>
@@ -96,6 +96,7 @@ function deleteTimeSheet(
 
 function addTimeTable(
     event: FormEvent<HTMLFormElement>,
+    state: TimeSheetState,
     context: TimeSheetContextData,
     personName: string,
     setAddPersonValue: React.Dispatch<SetStateAction<string>>,
@@ -105,6 +106,10 @@ function addTimeTable(
 
   if (personName === '') {
     alert('Cannot add timetable for nameless person')
+    return
+  }
+  if (Object.keys(state.timeTablePropsMap).some(person => person.toLowerCase() === personName.toLowerCase())) {
+    alert(`Timetable already exists for person ${personName}`)
     return
   }
 
