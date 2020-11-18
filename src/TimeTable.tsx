@@ -12,8 +12,9 @@ const bodyRowNames = [
   'DAY',
   'START',
   'END',
-  'UNPAID BREAKS',
-  'DAILY HOURS TOTAL'
+  'UNPAID BREAKS (MINUTES)',
+  'DAILY HOURS TOTAL',
+  'IS DAY OFF?'
 ]
 
 interface TimeTableProps {

@@ -1,4 +1,4 @@
-import { parseJson, areEqual, startOfWeek } from '../Utils'
+import { parseJson, areEqual, startOfWeek, includes } from '../Utils'
 import { TimeSheetState } from '../state/TimeSheetState'
 
 const timeSheetDatesKey: string = 'timeSheetDates'
@@ -20,7 +20,7 @@ function addSavedTimeSheetDate(date: Date): void {
   validateIsStartOfWeekDate(date)
 
   const savedDates = getSavedTimeSheetDates()
-  if (!savedDates.some(savedDate => areEqual(date, savedDate))) {
+  if (!includes(savedDates, date)) {
     setSavedTimeSheetDates([date, ...savedDates])
   }
 }
@@ -42,8 +42,9 @@ function saveTimeSheetToLocalStorage(date: Date, state: TimeSheetState): void {
 function existsTimeSheetInLocalStorage(date: Date): boolean {
   validateIsStartOfWeekDate(date)
 
-  return getSavedTimeSheetDates().some(savedDate => areEqual(date, savedDate))
-    || localStorage.getItem(`timeSheet-${date.toISOString()}`) !== null
+  // return includes(getSavedTimeSheetDates(), date, savedDate)
+  //   || localStorage.getItem(`timeSheet-${date.toISOString()}`) !== null
+  return localStorage.getItem(`timeSheet-${date.toISOString()}`) !== null
 }
 
 function loadTimeSheetFromLocalStorage(date: Date): TimeSheetState | null {
@@ -79,6 +80,7 @@ function validateIsStartOfWeekDate(date: Date): void {
 export {
   getSavedTimeSheetDates,
   addSavedTimeSheetDate,
+  deleteSavedTimeSheetDate,
   saveTimeSheetToLocalStorage,
   existsTimeSheetInLocalStorage,
   loadTimeSheetFromLocalStorage,

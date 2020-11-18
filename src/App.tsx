@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, SetStateAction } from 'react';
 import {
   HashRouter,
   Switch,
@@ -8,13 +8,13 @@ import {
 import './App.css';
 import Home from './pages/Home';
 import TimeSheetPage from './pages/TimeSheetPage';
-import { getSavedTimeSheetDates } from './store/TimeSheetStore';
-import { addTime, toReadableDateString } from './Utils';
+import { getSavedTimeSheetDates, addSavedTimeSheetDate, deleteSavedTimeSheetDate } from './store/TimeSheetStore';
+import { areEqual, startOfWeek, toReadableWeekString, includes } from './Utils';
 
 const baseUrl = '/timesheet-maker'
 
 function App() {
-  const savedTimeSheetDates = getSavedTimeSheetDates()
+  const [timeSheetDates, setTimeSheetDates] = useState(getSavedTimeSheetDates())
 
   return (
     <HashRouter basename={baseUrl}>
@@ -24,31 +24,61 @@ function App() {
             <li>
               <Link to='/'>Home</Link>
             </li>
-            {savedTimeSheetDates.sort().map(date => 
+            {timeSheetDates.sort().map(date => 
             <li key={date.toISOString()}>
               <Link to={`/${date.toISOString()}`}>
-                {toReadableDateString(date, true)} – {toReadableDateString(addTime(date, 7), true)}
+                {toReadableWeekString(date, true)}
               </Link>
             </li>)}
           </ul>
         </nav>
 
         <Switch>
-          <Route path='/:date' component=
-            {TimeSheetPage}
-          >
-            
+          <Route path='/:date'>
+            <TimeSheetPage isDeletedTimeSheetDate={date => isDeletedTimeSheetDate(timeSheetDates, date)}
+              addTimeSheetDate={date => addTimeSheetDate(timeSheetDates, setTimeSheetDates, date)}
+              deleteTimeSheetDate={date => deleteTimeSheetDate(timeSheetDates, setTimeSheetDates, date)} />
           </Route>
           <Route path=''>
-            <Home />
+            <Home timeSheetDates={timeSheetDates}
+              addTimeSheetDate={date => addTimeSheetDate(timeSheetDates, setTimeSheetDates, date)} />
           </Route>
         </Switch>
       </>
     </HashRouter>
-    // <section className="App">
-    //   <TimeSheet date={new Date(Date.now())} />
-    // </section>
   );
+}
+
+function addTimeSheetDate(
+    timeSheetDates: Date[],
+    setTimeSheetDates: React.Dispatch<SetStateAction<Date[]>>,
+    date: Date): void {
+  
+  const startOfWeekDate = startOfWeek(date)
+  if (!includes(timeSheetDates, startOfWeekDate)) {
+    addSavedTimeSheetDate(startOfWeekDate)
+    setTimeSheetDates(getSavedTimeSheetDates())
+  }
+}
+
+function deleteTimeSheetDate(
+  timeSheetDates: Date[],
+  setTimeSheetDates: React.Dispatch<SetStateAction<Date[]>>,
+  date: Date): void {
+    
+  const startOfWeekDate = startOfWeek(date)
+  if (includes(timeSheetDates, startOfWeekDate)) {
+    deleteSavedTimeSheetDate(startOfWeekDate)
+    setTimeSheetDates(getSavedTimeSheetDates())
+  }
+}
+
+function isDeletedTimeSheetDate(
+  timeSheetDates: Date[],
+  date: Date): boolean {
+    
+  const startOfWeekDate = startOfWeek(date)
+  return !includes(timeSheetDates, startOfWeekDate)
 }
 
 export default App;

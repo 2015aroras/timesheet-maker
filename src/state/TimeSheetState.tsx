@@ -10,9 +10,9 @@ interface TimeSheetState {
   timeTablePropsMap: {[personName: string]: TimeTableProps}
 }
 
-function initialState(props: TimeSheetProps): TimeSheetState {
+function initialState(date: Date): TimeSheetState {
   return {
-    weekStartDate: startOfWeek(props.date),
+    weekStartDate: startOfWeek(date),
     timeTablePropsMap: {}
   }
 }
@@ -36,6 +36,7 @@ function initialDayColumnProps(props: TimeSheetProps,
 
   return {
     personName: personName,
+    isDayOff: true,
     dow: dow,
     startTime: startTime,
     endTime: endTime,
@@ -43,8 +44,43 @@ function initialDayColumnProps(props: TimeSheetProps,
   }
 }
 
+function cloneStateWithNewDate(state: TimeSheetState, date: Date): TimeSheetState {
+  const copiedPropsMapWithNewDate: {[personName: string]: TimeTableProps} = {}
+  for (const personName in state.timeTablePropsMap) {
+    copiedPropsMapWithNewDate[personName] = cloneTimeTablePropsWithNewDate(state.timeTablePropsMap[personName], date)
+  }
+
+  return {
+    weekStartDate: startOfWeek(date),
+    timeTablePropsMap: copiedPropsMapWithNewDate
+  }
+}
+
+function cloneTimeTablePropsWithNewDate(props: TimeTableProps, date: Date): TimeTableProps {
+  return {
+    personName: props.personName,
+    date: date,
+    dayColumnsProps: daysOfWeek.reduce((map, dow) => {
+      map[dow] = cloneDayColumnPropsWithNewDate(props.dayColumnsProps[dow], dow, date)
+      return map
+    }, {} as {[dow in DayOfWeek]?: DayColumnProps}
+    ) as {[dow in DayOfWeek]: DayColumnProps}
+  }
+}
+
+function cloneDayColumnPropsWithNewDate(props: DayColumnProps, dow: DayOfWeek, date: Date): DayColumnProps {
+  const newDate = addTime(date, dow)
+
+  return {
+    ...props,
+    startTime: timeFromDate(newDate, props.startTime.getHours(), props.startTime.getMinutes(), props.startTime.getSeconds()),
+    endTime: timeFromDate(newDate, props.endTime.getHours(), props.endTime.getMinutes(), props.endTime.getSeconds()),
+  }
+}
+
 export type { TimeSheetState }
 export {
   initialState,
   initialTimeTableProps,
+  cloneStateWithNewDate
 }

@@ -2,6 +2,10 @@ function areEqual(date: Date, otherDate: Date): boolean {
   return date.toISOString() === otherDate.toISOString()
 }
 
+function includes(dates: Date[], queryDate: Date): boolean {
+  return dates.some(date => areEqual(date, queryDate))
+}
+
 function parseJson<T>(jsonString: string): T {
   return JSON.parse(jsonString, (key, value) => {
     if (key.toLowerCase().endsWith('date') || key.toLowerCase().endsWith('time')) {
@@ -44,11 +48,20 @@ function toReadableDateString(date: Date, includeYear=false): string {
   return `${date.getDate()}/${date.getMonth() + 1}` + yearSuffix
 }
 
+function toReadableWeekString(date: Date, includeYear=false): string {
+  const startOfWeekDate = startOfWeek(date)
+  return `${toReadableDateString(startOfWeekDate, includeYear)} – ${toReadableDateString(addTime(startOfWeekDate, 7), includeYear)}`
+}
+
+
+
 export {
   areEqual,
+  includes,
   parseJson,
   startOfWeek,
   timeFromDate,
   addTime,
-  toReadableDateString
+  toReadableDateString,
+  toReadableWeekString
 }

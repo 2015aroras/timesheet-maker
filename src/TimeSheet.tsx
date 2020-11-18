@@ -2,10 +2,14 @@ import React, { FormEvent, useState, SetStateAction, useRef } from 'react';
 import TimeTable, { getTotalHoursWorkingInWeek } from './TimeTable'
 import { useTimeSheetReducer, TimeSheetAction, TimeSheetActionType } from './state/TimeSheetReducer';
 import { TimeSheetState } from './state/TimeSheetState';
-import { saveTimeSheetToLocalStorage, deleteTimeSheetFromLocalStorage, existsTimeSheetInLocalStorage } from './store/TimeSheetStore';
+import { saveTimeSheetToLocalStorage, deleteTimeSheetFromLocalStorage } from './store/TimeSheetStore';
+import { toReadableWeekString } from './Utils';
 
 interface TimeSheetProps {
   date: Date,
+  addTimeSheetDate: (date: Date) => void,
+  deleteTimeSheetDate: (date: Date) => void,
+  isDeletedTimeSheetDate: boolean
 }
 
 interface TimeSheetContextData {
@@ -26,14 +30,15 @@ function TimeSheet(props: TimeSheetProps) {
   const [addPersonValue, setAddPersonValue] = useState(defaultAddPersonValue)
   const addPersonInputRef = useRef<HTMLInputElement | null>(null)
 
-  const [isSaved, setIsSaved] = useState(initialIsSavedTimeSheet(state.weekStartDate))
-
   return (
     <TimeSheetContext.Provider value={timeSheetContext}>
-      <button disabled={!canSaveTimeSheet(state.weekStartDate, state)} onClick={() => saveTimeSheet(state.weekStartDate, state, setIsSaved)}>
+      <h2>
+        Week: {toReadableWeekString(props.date)}
+      </h2>
+      <button disabled={!canSaveTimeSheet(state.weekStartDate, state)} onClick={() => saveTimeSheet(state.weekStartDate, state, props.addTimeSheetDate)}>
         Save Time Sheet To Local Storage
       </button>
-      <button disabled={!canDeleteTimeSheet(state.weekStartDate, isSaved)} onClick={() => deleteTimeSheet(state.weekStartDate, setIsSaved)}>
+      <button disabled={!canDeleteTimeSheet(state.weekStartDate, props.isDeletedTimeSheetDate)} onClick={() => deleteTimeSheet(state.weekStartDate, props.deleteTimeSheetDate)}>
         Delete Time Sheet From Local Storage
       </button>
       <form onSubmit={(evt) => addTimeTable(evt, timeSheetContext, addPersonValue, setAddPersonValue, addPersonInputRef)}>
@@ -56,31 +61,37 @@ function TimeSheet(props: TimeSheetProps) {
   );
 }
 
-function initialIsSavedTimeSheet(date: Date) {
-  return existsTimeSheetInLocalStorage(date)
-}
-
 function canSaveTimeSheet(date: Date, state: TimeSheetState) {
   return true
 }
 
-function canDeleteTimeSheet(date: Date, isSaved: boolean) {
-  return isSaved
+function canDeleteTimeSheet(date: Date, isDeletedTimeSheetDate: boolean) {
+  return !isDeletedTimeSheetDate
 }
 
 function saveTimeSheet(
     date: Date,
     state: TimeSheetState,
-    setIsSaved: React.Dispatch<React.SetStateAction<boolean>>) {
+    addTimeSheetDate: React.Dispatch<Date>) {
+
   saveTimeSheetToLocalStorage(date, state)
-  setIsSaved(true)
+  addTimeSheetDate(date)
+
+  window.alert(`Successfully saved time sheet for ${toReadableWeekString(date)}`)
 }
 
 function deleteTimeSheet(
     date: Date,
-    setIsSaved: React.Dispatch<React.SetStateAction<boolean>>) {
-  deleteTimeSheetFromLocalStorage(date)
-  setIsSaved(false)
+    deleteTimeSheetDate: React.Dispatch<Date>) {
+
+  const confirmedCancel = window.confirm(`Are you sure you want to delete time sheet save data for ${toReadableWeekString(date)}?`)
+
+  if (confirmedCancel) {
+    deleteTimeSheetDate(date)
+    deleteTimeSheetFromLocalStorage(date)
+  
+    window.alert(`Successfully deleted time sheet save data for ${toReadableWeekString(date)}`)
+  }
 }
 
 function addTimeTable(

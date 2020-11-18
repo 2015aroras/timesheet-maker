@@ -5,10 +5,12 @@ import DayOfWeekCell from './cells/DayOfWeekCell';
 import DayOfWeek from './DayOfWeek';
 import { TimeSheetContextData, TimeSheetContext } from './TimeSheet';
 import { TimeSheetActionType } from './state/TimeSheetReducer';
+import CheckBoxCell from './cells/CheckBoxCell';
 
 interface DayColumnProps {
   personName: string,
   dow: DayOfWeek,
+  isDayOff?: boolean, // Optional for backwards compatibility
   startTime: Date,
   endTime: Date,
   breaksLength: number,
@@ -20,8 +22,26 @@ function GetDayColumn(props: DayColumnProps) {
     throw new Error(`Time sheet context is null in ${GetDayColumn.name}`)
   }
 
+  const dayOfWeekCell = <DayOfWeekCell key={0} dow={props.dow} />
+  const checkBoxCell = <CheckBoxCell
+    key={5}
+    isChecked={props.isDayOff ?? false}
+    onCheckedChange={isChecked => handleIsDayOffChange(props, timeSheetContext, isChecked)}
+    value={props.dow.toString()} />
+
+  if (props.isDayOff) {
+    return React.Children.toArray([
+      dayOfWeekCell,
+      <></>,
+      <></>,
+      <></>,
+      <></>,
+      checkBoxCell
+    ]);
+  }
+
   return React.Children.toArray([
-    <DayOfWeekCell key={0} dow={props.dow} />,
+    dayOfWeekCell,
     <TimeCell
       key={1}
       time={props.startTime}
@@ -38,11 +58,16 @@ function GetDayColumn(props: DayColumnProps) {
     <NumberCell
       key={4}
       number={getTotalHoursWorking(props)}
-      readOnly={true}/>
+      readOnly={true}/>,
+    checkBoxCell
   ]);
 }
 
 function getTotalHoursWorking(props: DayColumnProps): number {
+  if (props.isDayOff) {
+    return 0;
+  }
+
   return props.endTime.getHours() - props.startTime.getHours()
          - props.breaksLength / 60
          + (props.endTime.getMinutes() - props.startTime.getMinutes()) / 60
@@ -66,11 +91,19 @@ function handleEndTimeChange(
 }
 
 function handleBreaksLengthChange(
-    props: DayColumnProps,
-    timeSheetContext: TimeSheetContextData | null,
-    newNumber: number) {
+  props: DayColumnProps,
+  timeSheetContext: TimeSheetContextData | null,
+  newNumber: number) {
 
   handleChange(props, timeSheetContext, TimeSheetActionType.BreaksLengthUpdate, newNumber)
+}
+
+function handleIsDayOffChange(
+  props: DayColumnProps,
+  timeSheetContext: TimeSheetContextData | null,
+  newIsChecked: boolean) {
+
+  handleChange(props, timeSheetContext, TimeSheetActionType.IsDayOffUpdate, newIsChecked)
 }
 
 function handleChange<T>(

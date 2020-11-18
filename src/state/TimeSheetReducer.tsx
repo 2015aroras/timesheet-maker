@@ -17,6 +17,7 @@ enum TimeSheetActionType {
   StartTimeUpdate,
   EndTimeUpdate,
   BreaksLengthUpdate,
+  IsDayOffUpdate,
   SetState,
   AddTimeTable,
   DeleteTimeTable
@@ -25,16 +26,15 @@ enum TimeSheetActionType {
 function useTimeSheetReducer(props: TimeSheetProps): [TimeSheetState, React.Dispatch<TimeSheetAction>] {
   const [state, dispatch] = useReducer(
     (state: TimeSheetState, action: TimeSheetAction) => reducer(props, state, action),
-    initialState(props))
+    initialState(props.date))
 
   useEffect(() => {
     const localState = loadTimeSheetFromLocalStorage(startOfWeek(props.date))
-    if (localState !== null) {
-      dispatch({
-        type: TimeSheetActionType.SetState,
-        value: localState
-      })
-    }
+    dispatch({
+      type: TimeSheetActionType.SetState,
+      value: localState ?? initialState(props.date)
+    })
+    
     // return () => {
     //   console.log('Setting state')
     //   localStorage.setItem('state', JSON.stringify(state))
@@ -52,6 +52,7 @@ function reducer(
     case TimeSheetActionType.StartTimeUpdate:
     case TimeSheetActionType.EndTimeUpdate:
     case TimeSheetActionType.BreaksLengthUpdate:
+    case TimeSheetActionType.IsDayOffUpdate:
       return valueUpdater(state, action)
     case TimeSheetActionType.SetState:
       return action.value as TimeSheetState
@@ -85,6 +86,9 @@ function valueUpdater(state: TimeSheetState, action: TimeSheetAction): TimeSheet
       break
     case TimeSheetActionType.BreaksLengthUpdate:
       updatedDayColumn.breaksLength = action.value
+      break
+    case TimeSheetActionType.IsDayOffUpdate:
+      updatedDayColumn.isDayOff = action.value
       break
     default:
       throw new Error(`Action type ${action.type} is not supported by ${valueUpdater}`)
