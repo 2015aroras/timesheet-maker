@@ -6,7 +6,7 @@ import { TimeSheetContext, TimeSheetContextData } from './TimeSheet';
 import { TimeSheetActionType } from './state/TimeSheetReducer';
 
 const headerRowName = [
-  'PERSON',
+  '',
 ]
 const bodyRowNames = [
   'DAY',
@@ -19,6 +19,7 @@ const bodyRowNames = [
 
 interface TimeTableProps {
   personName: string,
+  timeTablePos?: number,
   date: Date,
   dayColumnsProps: {[dow in DayOfWeek]: DayColumnProps}
 }
@@ -46,6 +47,8 @@ function TimeTable(props: TimeTableProps) {
         <tr>
           <th scope='row'>
             {headerRowName}
+            <button onClick={() => moveTimeTableUp(timeSheetContext, props.personName)}>Up</button>
+            <button onClick={() => moveTimeTableDown(timeSheetContext, props.personName)}>Down</button>
             <button onClick={() => deleteTimeTable(timeSheetContext, props.personName)}>Delete</button>
           </th>
           <td colSpan={daysOfWeek.length}>
@@ -74,11 +77,29 @@ function transpose<T>(array: Array<Array<T>>) {
   return array[0].map((_, colIndex) => array.map(row => row[colIndex]));
 }
 
-function deleteTimeTable(context: TimeSheetContextData, personName: string) {
+function moveTimeTableUp(context: TimeSheetContextData, personName: string) {
   context.dispatch({
-    type: TimeSheetActionType.DeleteTimeTable,
+    type: TimeSheetActionType.MoveTimeTableUp,
     personName: personName
   })
+}
+
+function moveTimeTableDown(context: TimeSheetContextData, personName: string) {
+  context.dispatch({
+    type: TimeSheetActionType.MoveTimeTableDown,
+    personName: personName
+  })
+}
+
+function deleteTimeTable(context: TimeSheetContextData, personName: string) {
+  const confirmedCancel = window.confirm(`Are you sure you want to delete the time table for ${personName}?`)
+
+  if (confirmedCancel) {
+    context.dispatch({
+      type: TimeSheetActionType.DeleteTimeTable,
+      personName: personName
+    })
+  }
 }
 
 function getTotalHoursWorkingInWeek(props: TimeTableProps): number {

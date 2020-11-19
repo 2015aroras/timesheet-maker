@@ -53,8 +53,6 @@ function toReadableWeekString(date: Date, includeYear=false): string {
   return `${toReadableDateString(startOfWeekDate, includeYear)} – ${toReadableDateString(addTime(startOfWeekDate, 7), includeYear)}`
 }
 
-
-
 export {
   areEqual,
   includes,

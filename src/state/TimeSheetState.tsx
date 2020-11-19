@@ -17,9 +17,10 @@ function initialState(date: Date): TimeSheetState {
   }
 }
 
-function initialTimeTableProps(props: TimeSheetProps, personName: string): TimeTableProps {
+function initialTimeTableProps(props: TimeSheetProps, personName: string, personPos: number): TimeTableProps {
   return {
     personName: personName,
+    timeTablePos: personPos,
     date: props.date,
     dayColumnsProps: daysOfWeek.reduce((map, dow) => {
       map[dow] = initialDayColumnProps(props, personName, dow)
@@ -51,6 +52,7 @@ function cloneStateWithNewDate(state: TimeSheetState, date: Date): TimeSheetStat
   }
 
   return {
+    ...state,
     weekStartDate: startOfWeek(date),
     timeTablePropsMap: copiedPropsMapWithNewDate
   }
@@ -58,7 +60,7 @@ function cloneStateWithNewDate(state: TimeSheetState, date: Date): TimeSheetStat
 
 function cloneTimeTablePropsWithNewDate(props: TimeTableProps, date: Date): TimeTableProps {
   return {
-    personName: props.personName,
+    ...props,
     date: date,
     dayColumnsProps: daysOfWeek.reduce((map, dow) => {
       map[dow] = cloneDayColumnPropsWithNewDate(props.dayColumnsProps[dow], dow, date)

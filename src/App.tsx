@@ -9,7 +9,7 @@ import './App.css';
 import Home from './pages/Home';
 import TimeSheetPage from './pages/TimeSheetPage';
 import { getSavedTimeSheetDates, addSavedTimeSheetDate, deleteSavedTimeSheetDate } from './store/TimeSheetStore';
-import { areEqual, startOfWeek, toReadableWeekString, includes } from './Utils';
+import { startOfWeek, toReadableWeekString, includes } from './Utils';
 
 const baseUrl = '/timesheet-maker'
 

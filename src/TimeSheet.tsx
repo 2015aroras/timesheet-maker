@@ -51,11 +51,11 @@ function TimeSheet(props: TimeSheetProps) {
       <p>
         Total hours working in week: {getAllPeopleTotalHoursWorking(state)}
       </p>
-      {Object.keys(state.timeTablePropsMap).map(personName => (
-      <div className='container' key={personName}>
-        {React.createElement(
-          TimeTable,
-          state.timeTablePropsMap[personName])}
+      {Object.values(state.timeTablePropsMap)
+        .sort((timeTable, other) => timeTable.timeTablePos! - other.timeTablePos!)
+        .map(timeTable => (
+      <div className='container' key={timeTable.personName}>
+        {React.createElement(TimeTable, timeTable)}
       </div>))}
     </TimeSheetContext.Provider>
   );
